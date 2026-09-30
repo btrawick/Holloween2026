@@ -3,37 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0710" />
   <title>Westelijke Eilanden Halloween Route 2026</title>
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <div class="fog fog-one" aria-hidden="true"></div>
+  <div class="fog fog-two" aria-hidden="true"></div>
+
   <main class="app-shell">
     <header class="topbar">
       <div>
         <p class="eyebrow">Amsterdam · Westelijke Eilanden</p>
-        <h1>Halloween Route 2026 🎃</h1>
-        <p class="subhead">A simple family walking route across the neighborhood.</p>
+        <h1><span class="ghost">👻</span> Halloween Route 2026 <span class="pumpkin">🎃</span></h1>
+        <p class="subhead">Find the glowing doors, follow the pumpkins, collect the candy.</p>
       </div>
       <div class="route-meta">
-        <strong id="stopCount">2 stops</strong>
-        <span id="routeDistance">Route preview</span>
+        <strong id="stopCount">2 haunted stops</strong>
+        <span id="routeDistance">Test route</span>
       </div>
     </header>
 
     <section class="map-card">
+      <div class="moon" aria-hidden="true"></div>
       <div id="map" aria-label="Halloween route map"></div>
       <div class="map-overlay">
-        <span>Tap a pumpkin to see the house</span>
+        <span>🕯️ Tap a pumpkin to reveal the house</span>
       </div>
     </section>
 
     <section class="stops-panel">
       <div class="panel-heading">
         <div>
-          <p class="eyebrow">Tonight's test route</p>
-          <h2>Halloween houses</h2>
+          <p class="eyebrow">Tonight's haunted trail</p>
+          <h2>Trick-or-treat stops</h2>
         </div>
       </div>
       <div id="stops" class="stops-list"></div>

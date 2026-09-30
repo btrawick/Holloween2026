@@ -31,23 +31,24 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const pumpkinIcon = L.divIcon({
   className: "pumpkin-marker",
   html: "<div>🎃</div>",
-  iconSize: [42, 42],
-  iconAnchor: [21, 42],
-  popupAnchor: [0, -38]
+  iconSize: [44, 44],
+  iconAnchor: [22, 44],
+  popupAnchor: [0, -40]
 });
 
 const bounds = [];
 
 houses.forEach((house) => {
   const marker = L.marker([house.lat, house.lng], { icon: pumpkinIcon }).addTo(map);
-  marker.bindPopup(`<strong>${house.label}</strong><br><span>${house.note}</span>`);
+  marker.bindPopup(`<strong>🎃 ${house.label}</strong><br><span>${house.note}</span>`);
   bounds.push([house.lat, house.lng]);
 });
 
 const route = L.polyline(bounds, {
+  color: "#ff7a1a",
   weight: 6,
-  opacity: 0.9,
-  dashArray: "1, 10",
+  opacity: 0.94,
+  dashArray: "2, 11",
   lineCap: "round"
 }).addTo(map);
 
@@ -55,7 +56,7 @@ map.fitBounds(route.getBounds(), {
   padding: [70, 70]
 });
 
-document.getElementById("stopCount").textContent = `${houses.length} stops`;
+document.getElementById("stopCount").textContent = `${houses.length} haunted stops`;
 
 const stopsEl = document.getElementById("stops");
 houses.forEach((house, index) => {
@@ -63,7 +64,7 @@ houses.forEach((house, index) => {
   card.className = "stop-card";
   card.innerHTML = `
     <div class="stop-index">${index + 1}</div>
-    <strong>${house.label}</strong>
+    <strong>🎃 ${house.label}</strong>
     <span>${house.address}</span>
   `;
   stopsEl.appendChild(card);
