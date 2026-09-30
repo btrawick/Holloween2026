@@ -4,8 +4,8 @@ const houses = [
     address: "Bickerswerf 19, Amsterdam",
     label: "Bickerswerf 19",
     note: "Test Halloween house",
-    lat: 52.38696,
-    lng: 4.89079
+    lat: 52.38543,
+    lng: 4.88987
   },
   {
     id: 2,
