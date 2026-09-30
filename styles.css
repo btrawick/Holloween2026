@@ -487,3 +487,39 @@ h1 {
   70% { box-shadow: 0 0 0 15px rgba(105,167,255,0); }
   100% { box-shadow: 0 0 0 0 rgba(105,167,255,0); }
 }
+
+
+.map-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.location-button {
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(40, 20, 46, .96);
+  color: #fff7e8;
+  border-radius: 999px;
+  padding: 8px 11px;
+  cursor: pointer;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(0,0,0,.24);
+}
+
+.location-button:hover {
+  border-color: #8f5a91;
+  background: rgba(51, 25, 58, .98);
+}
+
+.location-button:disabled {
+  opacity: .7;
+  cursor: default;
+}
+
+@media (max-width: 640px) {
+  .map-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    border-radius: 16px;
+  }
+}
