@@ -165,51 +165,31 @@ const userLocationIcon = L.divIcon({
 let userMarker;
 let userAccuracyCircle;
 
-function showUserLocation() {
-  if (!navigator.geolocation) return;
-
-  navigator.geolocation.getCurrentPosition(
-    ({ coords }) => {
-      const latLng = [coords.latitude, coords.longitude];
-
-      if (userMarker) map.removeLayer(userMarker);
-      if (userAccuracyCircle) map.removeLayer(userAccuracyCircle);
-
-      userAccuracyCircle = L.circle(latLng, {
-        radius: coords.accuracy,
-        color: "#69a7ff",
-        weight: 1,
-        fillColor: "#69a7ff",
-        fillOpacity: 0.08
-      }).addTo(map);
-
-      userMarker = L.marker(latLng, { icon: userLocationIcon })
-        .addTo(map)
-        .bindPopup("You are here");
-    },
-    (error) => {
-      console.info("Location permission unavailable:", error.message);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 30000
-    }
-  );
-}
-
-
 const locateButton = document.getElementById("locateMe");
 
 if (locateButton) {
-  locateButton.addEventListener("click", () => {
-    locateButton.disabled = true;
-    locateButton.textContent = "📍 Finding you…";
-
+  locateButton.addEventListener("click", async () => {
     if (!navigator.geolocation) {
       locateButton.textContent = "Location unavailable";
+      locateButton.disabled = true;
       return;
     }
+
+    if (navigator.permissions?.query) {
+      try {
+        const permission = await navigator.permissions.query({ name: "geolocation" });
+        if (permission.state === "denied") {
+          locateButton.textContent = "Location blocked in browser";
+          locateButton.disabled = true;
+          return;
+        }
+      } catch (_) {
+        // Some browsers do not expose geolocation permission state.
+      }
+    }
+
+    locateButton.disabled = true;
+    locateButton.textContent = "📍 Finding you…";
 
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
@@ -235,14 +215,18 @@ if (locateButton) {
         locateButton.textContent = "📍 Location shown";
         locateButton.disabled = false;
       },
-      () => {
-        locateButton.textContent = "📍 Show my location";
+      (error) => {
+        if (error.code === 1) {
+          locateButton.textContent = "Location not enabled";
+        } else {
+          locateButton.textContent = "Try location again";
+        }
         locateButton.disabled = false;
       },
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 30000
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 120000
       }
     );
   });
