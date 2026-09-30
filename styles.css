@@ -523,3 +523,90 @@ h1 {
     border-radius: 16px;
   }
 }
+
+
+/* UI polish: calmer moon, cleaner glow, interactive cards */
+.moon {
+  top: 20px;
+  right: 22px;
+  width: 42px;
+  height: 42px;
+  opacity: .9;
+  background: #f3e6c5;
+  box-shadow:
+    0 0 10px rgba(243,230,197,.46),
+    0 0 24px rgba(243,230,197,.14);
+  animation: moonDrift 14s ease-in-out infinite alternate;
+}
+
+.moon::after {
+  width: 42px;
+  height: 42px;
+  left: 13px;
+  top: -4px;
+  background: rgba(24,14,29,.96);
+}
+
+@keyframes moonDrift {
+  from { transform: translateY(0); }
+  to { transform: translateY(4px); }
+}
+
+.map-card {
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.52),
+    0 0 26px rgba(116,47,139,.08);
+}
+
+.stop-card {
+  cursor: pointer;
+}
+
+.stop-card:focus-visible {
+  outline: 2px solid #f4a25d;
+  outline-offset: 3px;
+}
+
+.stop-card.is-active {
+  border-color: #e88b44;
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.3),
+    0 0 18px rgba(244,124,32,.18);
+}
+
+.pumpkin-marker div {
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.44),
+    0 0 20px rgba(244,124,32,.5);
+}
+
+.pumpkin-cluster {
+  box-shadow:
+    0 9px 22px rgba(0,0,0,.46),
+    0 0 20px rgba(244,124,32,.46);
+}
+
+.location-button {
+  background: rgba(27,16,31,.88);
+  border-color: rgba(255,255,255,.11);
+  box-shadow: none;
+  font-weight: 700;
+  opacity: .88;
+}
+
+.location-button:hover {
+  opacity: 1;
+}
+
+@media (max-width: 720px) {
+  .moon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .moon::after {
+    width: 36px;
+    height: 36px;
+    left: 11px;
+  }
+}
