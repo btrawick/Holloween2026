@@ -12,8 +12,24 @@ const houses = [
     address: "Realengracht 164, Amsterdam",
     label: "Realengracht 164",
     note: "Test Halloween house",
-    lat: 52.38837,
-    lng: 4.88908
+    lat: 52.387282,
+    lng: 4.888259
+  },
+  {
+    id: 3,
+    address: "Realengracht 170, Amsterdam",
+    label: "Realengracht 170",
+    note: "Test Halloween house",
+    lat: 52.387287,
+    lng: 4.888259
+  },
+  {
+    id: 4,
+    address: "Realengracht 174, Amsterdam",
+    label: "Realengracht 174",
+    note: "Test Halloween house",
+    lat: 52.387282,
+    lng: 4.888259
   }
 ];
 
@@ -32,10 +48,34 @@ const pumpkinIcon = L.divIcon({
   popupAnchor: [0, -40]
 });
 
-houses.forEach((house) => {
-  const marker = L.marker([house.lat, house.lng], { icon: pumpkinIcon }).addTo(map);
-  marker.bindPopup(`<strong>🎃 ${house.label}</strong><br><span>${house.note}</span>`);
+const markerGroup = L.markerClusterGroup({
+  showCoverageOnHover: false,
+  spiderfyOnMaxZoom: true,
+  zoomToBoundsOnClick: true,
+  maxClusterRadius: 34,
+  disableClusteringAtZoom: 19,
+  spiderLegPolylineOptions: {
+    weight: 2,
+    color: "#ff7a1a",
+    opacity: 0.7
+  },
+  iconCreateFunction(cluster) {
+    const count = cluster.getChildCount();
+    return L.divIcon({
+      html: `<div class="pumpkin-cluster">🎃<span>${count}</span></div>`,
+      className: "pumpkin-cluster-wrap",
+      iconSize: [50, 50]
+    });
+  }
 });
+
+houses.forEach((house) => {
+  const marker = L.marker([house.lat, house.lng], { icon: pumpkinIcon });
+  marker.bindPopup(`<strong>🎃 ${house.label}</strong><br><span>${house.note}</span>`);
+  markerGroup.addLayer(marker);
+});
+
+map.addLayer(markerGroup);
 
 document.getElementById("stopCount").textContent = `${houses.length} haunted stops`;
 
@@ -113,3 +153,49 @@ async function drawWalkingRoute() {
 }
 
 drawWalkingRoute();
+
+
+const userLocationIcon = L.divIcon({
+  className: "user-location-marker",
+  html: '<div class="user-location-pulse"><span></span></div>',
+  iconSize: [26, 26],
+  iconAnchor: [13, 13]
+});
+
+let userMarker;
+let userAccuracyCircle;
+
+function showUserLocation() {
+  if (!navigator.geolocation) return;
+
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      const latLng = [coords.latitude, coords.longitude];
+
+      if (userMarker) map.removeLayer(userMarker);
+      if (userAccuracyCircle) map.removeLayer(userAccuracyCircle);
+
+      userAccuracyCircle = L.circle(latLng, {
+        radius: coords.accuracy,
+        color: "#69a7ff",
+        weight: 1,
+        fillColor: "#69a7ff",
+        fillOpacity: 0.08
+      }).addTo(map);
+
+      userMarker = L.marker(latLng, { icon: userLocationIcon })
+        .addTo(map)
+        .bindPopup("You are here");
+    },
+    (error) => {
+      console.info("Location permission unavailable:", error.message);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 30000
+    }
+  );
+}
+
+showUserLocation();
