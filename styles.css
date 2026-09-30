@@ -350,3 +350,72 @@ h2 {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Extra haunted atmosphere */
+.fog-three {
+  top: 78vh;
+  opacity: .07;
+  animation-duration: 30s;
+}
+
+.bats {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  letter-spacing: .55rem;
+  opacity: .34;
+  filter: drop-shadow(0 4px 4px rgba(0,0,0,.65));
+  animation: batsFly 11s ease-in-out infinite alternate;
+}
+
+.bats-a { top: 10vh; left: 6vw; }
+.bats-b { top: 26vh; right: 7vw; animation-duration: 16s; }
+
+@keyframes batsFly {
+  from { transform: translate(-8px, 3px) rotate(-7deg); }
+  to { transform: translate(22px, -18px) rotate(8deg); }
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  box-shadow: inset 0 0 170px rgba(0,0,0,.58);
+}
+
+.map-card {
+  border-color: #72416f;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, .62),
+    0 0 48px rgba(116, 47, 139, .15);
+}
+
+#map {
+  filter: saturate(.5) brightness(.64) contrast(1.16) hue-rotate(10deg);
+}
+
+.stop-card {
+  border-color: #633a67;
+  box-shadow: inset 0 0 24px rgba(0,0,0,.2);
+}
+
+.stop-card::after {
+  opacity: .28;
+  font-size: 2.4rem;
+}
+
+.pumpkin-marker div {
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.48),
+    0 0 30px rgba(244,124,32,.72);
+}
+
+h1 {
+  text-shadow:
+    0 0 14px rgba(244, 124, 32, .38),
+    0 0 28px rgba(117, 46, 139, .18),
+    0 5px 24px rgba(0, 0, 0, .8);
+}
