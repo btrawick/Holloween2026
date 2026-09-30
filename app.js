@@ -198,4 +198,52 @@ function showUserLocation() {
   );
 }
 
-showUserLocation();
+
+const locateButton = document.getElementById("locateMe");
+
+if (locateButton) {
+  locateButton.addEventListener("click", () => {
+    locateButton.disabled = true;
+    locateButton.textContent = "📍 Finding you…";
+
+    if (!navigator.geolocation) {
+      locateButton.textContent = "Location unavailable";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const latLng = [coords.latitude, coords.longitude];
+
+        if (userMarker) map.removeLayer(userMarker);
+        if (userAccuracyCircle) map.removeLayer(userAccuracyCircle);
+
+        userAccuracyCircle = L.circle(latLng, {
+          radius: coords.accuracy,
+          color: "#69a7ff",
+          weight: 1,
+          fillColor: "#69a7ff",
+          fillOpacity: 0.08
+        }).addTo(map);
+
+        userMarker = L.marker(latLng, { icon: userLocationIcon })
+          .addTo(map)
+          .bindPopup("You are here")
+          .openPopup();
+
+        map.setView(latLng, Math.max(map.getZoom(), 17));
+        locateButton.textContent = "📍 Location shown";
+        locateButton.disabled = false;
+      },
+      () => {
+        locateButton.textContent = "📍 Show my location";
+        locateButton.disabled = false;
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000
+      }
+    );
+  });
+}
