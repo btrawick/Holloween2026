@@ -4,20 +4,20 @@ const houses = [
     address: "Bickerswerf 19, Amsterdam",
     label: "Bickerswerf 19",
     note: "Test Halloween house",
-    lat: 52.38682,
-    lng: 4.88358
+    lat: 52.38696,
+    lng: 4.89079
   },
   {
     id: 2,
     address: "Realengracht 164, Amsterdam",
     label: "Realengracht 164",
     note: "Test Halloween house",
-    lat: 52.39005,
-    lng: 4.88705
+    lat: 52.38837,
+    lng: 4.88908
   }
 ];
 
-const map = L.map("map", { zoomControl: true }).setView([52.38845, 4.8854], 15);
+const map = L.map("map", { zoomControl: true }).setView([52.3877, 4.8899], 16);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
