@@ -69,10 +69,13 @@ const markerGroup = L.markerClusterGroup({
   }
 });
 
+const houseMarkers = new Map();
+
 houses.forEach((house) => {
   const marker = L.marker([house.lat, house.lng], { icon: pumpkinIcon });
   marker.bindPopup(`<strong>🎃 ${house.label}</strong><br><span>${house.note}</span>`);
   markerGroup.addLayer(marker);
+  houseMarkers.set(house.id, marker);
 });
 
 map.addLayer(markerGroup);
@@ -83,11 +86,36 @@ const stopsEl = document.getElementById("stops");
 houses.forEach((house, index) => {
   const card = document.createElement("article");
   card.className = "stop-card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", `Show ${house.label} on map`);
   card.innerHTML = `
     <div class="stop-index">${index + 1}</div>
     <strong>🎃 ${house.label}</strong>
     <span>${house.address}</span>
   `;
+
+  const focusHouse = () => {
+    document.querySelectorAll(".stop-card").forEach((item) => item.classList.remove("is-active"));
+    card.classList.add("is-active");
+
+    const marker = houseMarkers.get(house.id);
+    if (!marker) return;
+
+    markerGroup.zoomToShowLayer(marker, () => {
+      map.setView(marker.getLatLng(), Math.max(map.getZoom(), 18));
+      marker.openPopup();
+    });
+  };
+
+  card.addEventListener("click", focusHouse);
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      focusHouse();
+    }
+  });
+
   stopsEl.appendChild(card);
 });
 
