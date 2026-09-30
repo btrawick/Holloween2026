@@ -4,7 +4,6 @@ const houses = [
     address: "Bickerswerf 19, Amsterdam",
     label: "Bickerswerf 19",
     note: "Test Halloween house",
-    // Approximate map position for prototype.
     lat: 52.38682,
     lng: 4.88358
   },
@@ -13,15 +12,12 @@ const houses = [
     address: "Realengracht 164, Amsterdam",
     label: "Realengracht 164",
     note: "Test Halloween house",
-    // Approximate map position for prototype.
     lat: 52.39005,
     lng: 4.88705
   }
 ];
 
-const map = L.map("map", {
-  zoomControl: true
-}).setView([52.38845, 4.8854], 15);
+const map = L.map("map", { zoomControl: true }).setView([52.38845, 4.8854], 15);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -36,24 +32,9 @@ const pumpkinIcon = L.divIcon({
   popupAnchor: [0, -40]
 });
 
-const bounds = [];
-
 houses.forEach((house) => {
   const marker = L.marker([house.lat, house.lng], { icon: pumpkinIcon }).addTo(map);
   marker.bindPopup(`<strong>🎃 ${house.label}</strong><br><span>${house.note}</span>`);
-  bounds.push([house.lat, house.lng]);
-});
-
-const route = L.polyline(bounds, {
-  color: "#ff7a1a",
-  weight: 6,
-  opacity: 0.94,
-  dashArray: "2, 11",
-  lineCap: "round"
-}).addTo(map);
-
-map.fitBounds(route.getBounds(), {
-  padding: [70, 70]
 });
 
 document.getElementById("stopCount").textContent = `${houses.length} haunted stops`;
@@ -69,3 +50,66 @@ houses.forEach((house, index) => {
   `;
   stopsEl.appendChild(card);
 });
+
+const routeInfo = document.getElementById("routeDistance");
+
+function formatDistance(meters) {
+  return meters < 1000
+    ? `${Math.round(meters / 10) * 10} m walk`
+    : `${(meters / 1000).toFixed(1)} km walk`;
+}
+
+function formatDuration(seconds) {
+  return `~${Math.max(1, Math.round(seconds / 60))} min`;
+}
+
+async function drawWalkingRoute() {
+  const coords = houses.map((house) => `${house.lng},${house.lat}`).join(";");
+  const endpoint = `https://router.project-osrm.org/route/v1/foot/${coords}?overview=full&geometries=geojson`;
+
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("Walking route request failed");
+
+    const data = await response.json();
+    const route = data.routes?.[0];
+    if (!route) throw new Error("No walking route returned");
+
+    const latLngs = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+
+    L.polyline(latLngs, {
+      color: "#241028",
+      weight: 11,
+      opacity: 0.8,
+      lineCap: "round",
+      lineJoin: "round"
+    }).addTo(map);
+
+    const line = L.polyline(latLngs, {
+      color: "#ff7a1a",
+      weight: 5,
+      opacity: 0.98,
+      dashArray: "2, 10",
+      lineCap: "round",
+      lineJoin: "round"
+    }).addTo(map);
+
+    map.fitBounds(line.getBounds(), { padding: [70, 70] });
+    routeInfo.textContent = `${formatDistance(route.distance)} · ${formatDuration(route.duration)}`;
+  } catch (error) {
+    console.error(error);
+    const fallback = houses.map((house) => [house.lat, house.lng]);
+    const line = L.polyline(fallback, {
+      color: "#ff7a1a",
+      weight: 5,
+      opacity: 0.9,
+      dashArray: "2, 10",
+      lineCap: "round"
+    }).addTo(map);
+
+    map.fitBounds(line.getBounds(), { padding: [70, 70] });
+    routeInfo.textContent = "Walking route unavailable · preview shown";
+  }
+}
+
+drawWalkingRoute();
